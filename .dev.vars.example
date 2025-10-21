@@ -1,0 +1,2 @@
+TURSO_DATABASE_URL="type your database url here"
+TURSO_AUTH_TOKEN="type your auth token here"

@@ -1,0 +1,24 @@
+{
+  "name": "credx-api",
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev",
+    "build": "wrangler build",
+    "deploy": "wrangler deploy --minify",
+    "cf-typegen": "wrangler types --env-interface CloudflareBindings",
+    "drizzle:generate": "drizzle-kit generate --config ./drizzle.config.ts",
+    "drizzle:push": "drizzle-kit push --config ./drizzle.config.ts"
+  },
+  "dependencies": {
+    "@libsql/client": "^0.15.15",
+    "@upstash/redis": "^1.35.6",
+    "dotenv": "^17.2.3",
+    "drizzle-orm": "^0.44.6",
+    "hono": "^4.10.1"
+  },
+  "devDependencies": {
+    "drizzle-kit": "^0.31.5",
+    "tsx": "^4.20.6",
+    "wrangler": "^4.4.0"
+  }
+}
