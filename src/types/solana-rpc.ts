@@ -47,7 +47,24 @@ interface Options {
 
 /*----------- Response ------------- */
 
+/* Generic RPC Response Wrapper */
+export interface SolanaRpcResponse<T> {
+	jsonrpc: string;
+	id: number | string;
+	result: T;
+}
 
+/* Signature Response */
+export interface SolanaSignatureInfo {
+	signature: string;
+	slot: number;
+	err: any | null;
+	memo: string | null;
+	blockTime: number | null;
+	confirmationStatus: string;
+}
+
+export type SolanaSignatureResponse = SolanaSignatureInfo[];
 
 /* OwnerAssetsResponse  */
 export interface OwnerAssetsResponse {
