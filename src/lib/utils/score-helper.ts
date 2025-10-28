@@ -1,3 +1,4 @@
+import { WalletScore, WalletScoreError } from "@/types/score-compute";
 import { RedisClient } from "../redis";
 import { UserStore } from "../redis/user";
 import type { SolanaApi } from "../solana-rpc";
@@ -167,17 +168,23 @@ const get_score_by_assets = async (
  * @param walletAddress The wallet address to compute the score for.
  * @returns The computed credit score of the wallet (0-100).
  */
+
 export const compute_score = async (
 	solana: SolanaApi,
 	redis: RedisClient,
 	walletAddress: string
-): Promise<number> => {
+): Promise<WalletScore | WalletScoreError> => {
 	try {
 		const userStore = UserStore.getInstance({ redis });
 
 		const existingScore = await userStore.getUserScore(walletAddress);
 		if (existingScore) {
-			return existingScore.final_score;
+			return {
+				final_score: existingScore.final_score,
+				tnx_score: existingScore.tnx_score,
+				age_score: existingScore.age_score,
+				assets_score: existingScore.assets_score,
+			};
 		}
 
 		const [txScore, ageScore, assetsScore] = await Promise.all([
@@ -191,16 +198,26 @@ export const compute_score = async (
 			ageScore * SCORE_WEIGHTS.AGE +
 			assetsScore * SCORE_WEIGHTS.ASSETS;
 
+		const roundedFinalScore = Math.round(finalScore);
+
 		await userStore.setUserScore(walletAddress, {
 			tnx_score: txScore,
 			age_score: ageScore,
 			assets_score: assetsScore,
-			final_score: Math.round(finalScore),
+			final_score: roundedFinalScore,
 		});
 
-		return Math.round(finalScore);
+		return {
+			final_score: roundedFinalScore,
+			tnx_score: txScore,
+			age_score: ageScore,
+			assets_score: assetsScore,
+		};
 	} catch (error) {
 		console.error("[compute_score] Error:", error);
-		return MIN_SCORE;
+		return {
+			error: error instanceof Error ? error.message : "Unknown error",
+			final_score: MIN_SCORE,
+		};
 	}
 };

@@ -16,7 +16,8 @@ export class ComputeController {
 							", "
 						)}`,
 						is_error: true,
-					})
+					}),
+					409
 				);
 			}
 
@@ -36,7 +37,7 @@ export class ComputeController {
 					},
 					message: "Score computed successfully",
 					is_error: false,
-				})
+				}), 200
 			);
 		} catch (error) {
 			if (error instanceof Error) {
@@ -44,7 +45,7 @@ export class ComputeController {
 					api_response({
 						message: error.message,
 						is_error: true,
-					})
+					}), 500
 				);
 			}
 		}

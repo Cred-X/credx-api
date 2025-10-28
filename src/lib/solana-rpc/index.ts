@@ -166,6 +166,7 @@ export class SolanaApi {
 				OwnerAssetsResponse,
 				OwnerAssetsParams
 			>(payload);
+			console.log("Fetched assets data:", data);
 			return data;
 		} catch (error) {
 			if (error instanceof Error) {
